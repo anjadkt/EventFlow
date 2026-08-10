@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import routes from "@/routes.js";
 import { errorMiddleware } from "@/middlewares/error.middleware.js";
 import { env } from "@/config/env.js";
+import { prisma } from "./config/prisma.js";
 
 const app = express();
 
@@ -19,6 +20,10 @@ app.use(cors({
 
 app.use(helmet());
 app.use(morgan("dev"));
+
+app.get("/", (_req, res) => {
+  res.send("Server is live...")
+});
 
 app.use("/api", routes);
 
