@@ -1,20 +1,16 @@
 import { Request, Response, NextFunction } from "express";
 import { ApiError } from "@/utils/ApiError.js";
-import jwt from "jsonwebtoken";
 import { env } from "@/config/env.js";
+import { verifyToken } from "@/utils/verifyToken.js";
 
 
 export type UserPayload = {
-  id: string,
-  email : string
-}
-
-export interface AuthRequest extends Request {
-  user?: UserPayload;
+  id: number,
+  email: string
 }
 
 export const authMiddleware = (
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -23,13 +19,9 @@ export const authMiddleware = (
 
   if (!token) throw new ApiError(401, "Unauthorized");
 
-  try {
-    const decoded = jwt.verify(token, env.JWT_ACCESS_SECRET) as UserPayload
+  const decoded = verifyToken(token, env.JWT_ACCESS_SECRET) as UserPayload
 
-    req.user = decoded;
-    next();
+  req.user = decoded;
+  next();
 
-  } catch {
-    throw new ApiError(401, "Invalid token");
-  }
 };
