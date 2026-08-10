@@ -8,10 +8,103 @@ datasource db {
 }
 
 model User {
+
   id        Int      @id @default(autoincrement())
   email     String   @unique
   name      String
+
   password  String
   token     String   @default("")
+
+  events    Event[]
+  rsvps     Rsvp[]
+
   createdAt DateTime @default(now())
+}
+
+model Event {
+
+  id           Int         @id @default(autoincrement())
+  title        String
+  description  String
+  slug         String      @unique
+
+  startDate    DateTime
+  endDate      DateTime
+  deadline     DateTime 
+  
+  bannerImage  String
+  logoImage    String
+
+  isFree       Boolean     @default(true)
+  price        Float?      @default(0)
+  maxTickets   Int?
+  regLink      String?
+  socialLinks  SocialLink[]
+  website      String?
+
+  venueName    String
+  location     String
+  locationLink String
+
+  status       EventStatus @default(DRAFT)
+
+  organiserId  Int
+  organiser    User        @relation(fields: [organiserId], references: [id])
+
+  rsvps        Rsvp[]
+
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+  CANCELLED
+  COMPLETED
+}
+
+model SocialLink {
+
+  id          Int            @id @default(autoincrement())
+  platform    SocialPlatform
+  url         String
+
+  eventId     Int
+  event       Event          @relation(fields: [eventId], references: [id])
+
+  @@unique([eventId, platform])
+}
+
+enum SocialPlatform {
+  INSTAGRAM
+  TWITTER
+  LINKEDIN
+  FACEBOOK
+  YOUTUBE
+  TIKTOK
+}
+
+model Rsvp {
+
+  id          Int       @id @default(autoincrement())
+
+  eventId     Int
+  userId      Int
+
+  event       Event     @relation(fields: [eventId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
+
+  status      RsvpStatus
+
+  createdAt   DateTime  @default(now())
+
+  @@unique([eventId, userId])
+}
+
+enum RsvpStatus {
+  GOING
+  MAYBE_GOING
+  NOT_GOING
 }
