@@ -9,7 +9,7 @@ export type UserPayload = {
   email: string
 }
 
-export const authMiddleware = (
+export const authenticate = (
   req: Request,
   res: Response,
   next: NextFunction

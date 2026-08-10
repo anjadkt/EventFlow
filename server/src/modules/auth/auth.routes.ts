@@ -10,6 +10,6 @@ router.post("/register", validate(registerSchema), authController.register)
 router.post("/login", validate(loginSchema), authController.login)
 router.get("/token", authController.getToken)
 router.get("/me", authenticate, authController.getMe)
-router.post("/logout", authController.logout)
+router.post("/logout", authenticate, authController.logout)
 
 export default router;
