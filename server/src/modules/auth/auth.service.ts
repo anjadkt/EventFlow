@@ -57,13 +57,13 @@ export const login = async (payload: LoginPayload) => {
     });
 
     if (!user) {
-        throw new ApiError(404, "User not found!");
+        throw new ApiError(400, "Invalid email or password");
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-        throw new ApiError(401, "Invalid password");
+        throw new ApiError(400, "Invalid password");
     }
 
     const accessToken = genAccessToken({ id: user.id, email: user.email });
@@ -85,7 +85,7 @@ export const login = async (payload: LoginPayload) => {
     }
 }
 
-export const me = async (userId: number) => {
+export const profile = async (userId: number) => {
 
     if (userId === undefined) throw new ApiError(401, "Unauthorized!");
 

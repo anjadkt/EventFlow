@@ -22,9 +22,9 @@ router.post("/login", validate(loginSchema), authController.login);
 router.get("/token", authController.getToken);
 
 // Get logged in user
-// GET /api/auth/me
+// GET /api/auth/profile
 // Private
-router.get("/me", authenticate, authController.getMe)
+router.get("/profile", authenticate, authController.getProfile)
 
 // Logout a user
 // POST /api/auth/logout

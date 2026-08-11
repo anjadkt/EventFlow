@@ -1,37 +1,8 @@
 import { catchAsync } from "@/utils/CatchAsync.js";
-import { env } from "@/config/env.js";
 import { ApiResponse } from "@/utils/ApiResponse.js";
-import type { CookieOptions, Request, Response } from "express";
+import type { Request, Response } from "express";
 import * as authService from "./auth.service.js"
-
-const isProduction = env.NODE_ENV === "production"
-
-const accessOptions: CookieOptions = isProduction ? {
-    httpOnly: true,
-    secure: true,
-    sameSite: "none",
-    maxAge: 15 * 60 * 1000,
-} : {
-    httpOnly: true,
-    secure: false,
-    sameSite: "lax",
-    maxAge: 15 * 60 * 1000,
-    partitioned: true
-}
-
-const refreshOptions: CookieOptions = isProduction ? {
-    httpOnly: true,
-    secure: true,
-    sameSite: "none",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-} : {
-    httpOnly: true,
-    secure: false,
-    sameSite: "lax",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    partitioned: true
-}
-
+import { accessOptions, refreshOptions } from "@/utils/cookieOptions.js";
 
 export const register = catchAsync(async (req: Request, res: Response) => {
 
@@ -57,9 +28,9 @@ export const login = catchAsync(async (req: Request, res: Response) => {
 
 });
 
-export const getMe = catchAsync(async (req: Request, res: Response) => {
+export const getProfile = catchAsync(async (req: Request, res: Response) => {
 
-    const user = await authService.me(Number(req.user?.id));
+    const user = await authService.profile(Number(req.user?.id));
 
     res.status(200).json(new ApiResponse(200, user, "User fetched successfully"));
 });
