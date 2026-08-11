@@ -1,6 +1,6 @@
 export class ApiResponse {
 
-    statusCode: number;
+    status: number;
     data: any;
     message: string;
     success: boolean;
@@ -8,7 +8,7 @@ export class ApiResponse {
 
     constructor(statusCode: number, response: any, message = "Success") {
 
-        this.statusCode = statusCode;
+        this.status = statusCode;
         this.data = response;
         this.message = message;
         this.success = true;
