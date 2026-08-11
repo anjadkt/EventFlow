@@ -1,6 +1,6 @@
 import { prisma } from "@/config/prisma.js";
 import { ApiError } from "@/utils/ApiError.js";
-import { CreateEventPayload, UpdateEventPayload, EventStatus } from "./events.types.js";
+import { CreateEventPayload, UpdateEventPayload, EventStatus, RSVPStatus } from "./events.types.js";
 import { generateSlug } from "@/utils/genSlug.js";
 
 // Create a new event
@@ -100,7 +100,6 @@ export const getMyEvents = async (organiserId: number) => {
     return events;
 };
 
-
 // Get a single event by ID
 export const getEvent = async (eventId: number) => {
     const event = await prisma.event.findUnique({
@@ -112,6 +111,12 @@ export const getEvent = async (eventId: number) => {
                     id: true,
                     name: true,
                     email: true
+                }
+            },
+            rsvps: {
+                select: {
+                    status: true,
+                    createdAt: true
                 }
             }
         }
@@ -210,3 +215,115 @@ export const deleteEvent = async (eventId: number, organiserId: number) => {
         message: "Event deleted successfully"
     };
 };
+
+// get users attending the event
+export const getAttendees = async (eventId: number, organiserId: number) => {
+
+    const event = await prisma.event.findUnique({
+        where: {
+            id: eventId,
+            organiserId
+        }
+    });
+
+    if (!event) {
+        throw new ApiError(404, "Event not found");
+    }
+
+    if (event.organiserId !== organiserId) {
+        throw new ApiError(403, "You are not authorized to get attendees of this event");
+    }
+
+    const attendees = await prisma.rsvp.findMany({
+        where: {
+            eventId,
+            status: "GOING"
+        },
+        select: {
+            createdAt: true,
+            user: {
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                },
+            },
+        },
+    });
+
+    return attendees;
+};
+
+// create or update rsvps for a event
+export const rsvp = async (eventId: number, userId: number) => {
+
+    const event = await prisma.event.findUnique({
+        where: { id: eventId }
+    });
+
+    if (userId === event?.organiserId) {
+        throw new ApiError(400, "You cannot RSVP to your own event");
+    }
+
+    if (!event) {
+        throw new ApiError(404, "Event not found");
+    }
+
+    if (["CANCELLED", "COMPLETED"].includes(event.status)) {
+        throw new ApiError(400, "Cannot RSVP to a cancelled or completed event");
+    }
+
+    const existingRsvp = await prisma.rsvp.findUnique({
+        where: {
+            eventId_userId: {
+                eventId,
+                userId
+            }
+        }
+    });
+
+    let rsvpStatus: RSVPStatus = "GOING";
+
+    if (existingRsvp) {
+
+        if (existingRsvp.status === "GOING") {
+            rsvpStatus = "NOT_GOING";
+        } else if (existingRsvp.status === "NOT_GOING") {
+            rsvpStatus = "GOING";
+        } else if (existingRsvp.status === "MAYBE_GOING") {
+            rsvpStatus = "GOING";
+        }
+
+        const updatedRsvp = await prisma.rsvp.update({
+            where: {
+                eventId_userId: {
+                    eventId,
+                    userId
+                }
+            },
+            data: {
+                status: rsvpStatus
+            },
+            select: {
+                status: true,
+                createdAt: true
+            }
+        });
+
+        return updatedRsvp;
+    }
+
+    const rsvp = await prisma.rsvp.create({
+        data: {
+            eventId,
+            userId,
+            status: "GOING"
+        },
+        select: {
+            status: true,
+            createdAt: true
+        }
+    });
+
+    return rsvp;
+}

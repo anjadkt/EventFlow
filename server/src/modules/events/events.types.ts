@@ -2,6 +2,8 @@ export type SocialPlatform = "INSTAGRAM" | "TWITTER" | "LINKEDIN" | "FACEBOOK" |
 
 export type EventStatus = "DRAFT" | "PUBLISHED" | "CANCELLED" | "COMPLETED";
 
+export type RSVPStatus = "GOING" | "MAYBE_GOING" | "NOT_GOING";
+
 export type SocialLinkInput = {
     platform: SocialPlatform;
     url: string;

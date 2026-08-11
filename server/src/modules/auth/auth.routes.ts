@@ -6,10 +6,29 @@ import { validate } from "@/middlewares/validate.middleware.js";
 
 const router = Router();
 
-router.post("/register", validate(registerSchema), authController.register)
-router.post("/login", validate(loginSchema), authController.login)
-router.get("/token", authController.getToken)
+// Register a new user
+// POST /api/auth/register
+// Public
+router.post("/register", validate(registerSchema), authController.register);
+
+// Login a user
+// POST /api/auth/login
+// Public
+router.post("/login", validate(loginSchema), authController.login);
+
+// Get access token
+// GET /api/auth/token
+// Public
+router.get("/token", authController.getToken);
+
+// Get logged in user
+// GET /api/auth/me
+// Private
 router.get("/me", authenticate, authController.getMe)
+
+// Logout a user
+// POST /api/auth/logout
+// Private
 router.post("/logout", authenticate, authController.logout)
 
 export default router;
