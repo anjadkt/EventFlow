@@ -3,12 +3,14 @@ import { ApiError } from "@/utils/ApiError.js";
 
 export const errorMiddleware = (
   err: ApiError,
-  req: Request,
+  _req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) => {
   res.status(err.statusCode || 500).json({
+    status: err.statusCode || 500,
     success: false,
-    message: err.message || "Server Error",
+    ok: false,
+    message: err.message || "Something went wrong!",
   });
 };
