@@ -118,4 +118,4 @@ export const createEventSchema = z.object({
         path: ["deadline"],
     })
 
-export const updateEventSchema = createEventSchema.partial();
+export const updateEventSchema = createEventSchema;

@@ -5,11 +5,11 @@
     "moduleResolution": "NodeNext",
     "rootDir": "src",
     "outDir": "dist",
-
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": [
+        "./src/*"
+      ]
     },
-
     "esModuleInterop": true,
     "strict": true
   }
