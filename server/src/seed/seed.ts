@@ -63,14 +63,14 @@ async function main() {
 
     await prisma.user.upsert({
         where: {
-            email: "michael@example.com",
+            email: "mike@example.com",
         },
         update: {
             name: "Michael Thomas",
             password: hashedPassword,
         },
         create: {
-            email: "michael@example.com",
+            email: "mike@example.com",
             name: "Michael Thomas",
             password: hashedPassword,
         },
@@ -109,7 +109,7 @@ async function main() {
     console.log("john@example.com");
     console.log("jane@example.com");
     console.log("alex@example.com");
-    console.log("michael@example.com");
+    console.log("mike@example.com");
     console.log("sara@example.com");
 
     console.log("\n🌱 Done!");
@@ -123,6 +123,3 @@ main()
 
         process.exit(1);
     })
-    .finally(async () => {
-        await prisma.$disconnect();
-    });
