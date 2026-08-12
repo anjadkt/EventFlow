@@ -19,12 +19,19 @@ export const loginService = async (from: LoginFrom) => {
     return response.data;
 }
 
-
 export const registerService = async (form:RegistrForm) => {
 
     const response = await api("/auth/register", {
         method: "POST",
         body: JSON.stringify(form)
+    });
+
+    return response.data;
+}
+
+export const logoutService = async () => {
+    const response = await api("/auth/logout", {
+        method: "POST"
     });
 
     return response.data;

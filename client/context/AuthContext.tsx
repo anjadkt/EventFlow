@@ -19,6 +19,7 @@ type AuthContextType = {
     loading: boolean;
     setUser: (user: User | null) => void;
     authenticateUser: () => Promise<void>;
+    logout : () => void ;
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -44,6 +45,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     };
 
+    const logout = () => {
+        setUser(null);
+    }
+
     useEffect(() => {
         authenticateUser();
     }, [])
@@ -53,6 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             value={{
                 user,
                 loading,
+                logout,
                 authenticateUser,
                 setUser,
             }}
