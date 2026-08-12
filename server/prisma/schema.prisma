@@ -33,15 +33,12 @@ model Event {
   endDate      DateTime
   deadline     DateTime 
   
-  bannerImage  String
-  logoImage    String
+  media        Media[]
 
   isFree       Boolean     @default(true)
   price        Float?      @default(0)
   maxTickets   Int?
-  regLink      String?
   socialLinks  SocialLink[]
-  website      String?
 
   venueName    String
   location     String
@@ -63,6 +60,22 @@ enum EventStatus {
   PUBLISHED
   CANCELLED
   COMPLETED
+}
+
+model Media {
+  id          Int            @id @default(autoincrement())
+  name        MediaNames
+  url         String
+  eventId     Int
+  event       Event          @relation(fields: [eventId], references: [id])
+  createdAt   DateTime       @default(now())
+}
+
+enum MediaNames {
+  BANNER
+  VIDEO
+  LOGO
+  IMAGE
 }
 
 model SocialLink {

@@ -6,7 +6,7 @@ import { generateSlug } from "@/utils/genSlug.js";
 // Create a new event
 export const createEvent = async (payload: CreateEventPayload, organiserId: number) => {
 
-    const { socialLinks, ...eventData } = payload;
+    const { media, socialLinks, ...eventData } = payload;
 
     let slug = generateSlug(eventData.title);
     const existingSlug = await prisma.event.findUnique({ where: { slug } });
@@ -14,15 +14,19 @@ export const createEvent = async (payload: CreateEventPayload, organiserId: numb
         slug = `${slug}-${Date.now()}`;
     }
 
-    if (["CANCELLED", "COMPLETED"].includes(eventData.status)) throw new ApiError(400, "Invalid status");
+    if (!["DRAFT", "PUBLISHED"].includes(eventData.status)) throw new ApiError(400, "Invalid status");
 
     const event = await prisma.event.create({
         data: {
             ...eventData,
             slug,
-            bannerImage: eventData.bannerImage || "",
-            logoImage: eventData.logoImage || "",
             organiserId,
+            media: {
+                create: media.map(link => ({
+                    name: link.name,
+                    url : link.url
+                }))
+            },
             socialLinks: socialLinks ? {
                 create: socialLinks.map(link => ({
                     platform: link.platform,
@@ -48,7 +52,9 @@ export const createEvent = async (payload: CreateEventPayload, organiserId: numb
 // Get list of events with search
 export const getEvents = async (search?: string) => {
 
-    const where: any = {};
+    const where: any = {
+        status : "PUBLISHED"
+    };
 
     if (search) {
         where.OR = [
@@ -61,6 +67,7 @@ export const getEvents = async (search?: string) => {
         where,
         include: {
             socialLinks: true,
+            media : true,
             organiser: {
                 select: {
                     id: true,
@@ -84,6 +91,7 @@ export const getMyEvents = async (organiserId: number) => {
         where: { organiserId },
         include: {
             socialLinks: true,
+            media : true,
             organiser: {
                 select: {
                     id: true,
@@ -106,6 +114,7 @@ export const getEvent = async (eventId: number) => {
         where: { id: eventId },
         include: {
             socialLinks: true,
+            media : true,
             organiser: {
                 select: {
                     id: true,
@@ -144,7 +153,7 @@ export const updateEvent = async (eventId: number, payload: UpdateEventPayload, 
         throw new ApiError(403, "You are not authorized to update this event");
     }
 
-    const { socialLinks, ...eventData } = payload;
+    const { media, socialLinks, ...eventData } = payload;
 
     const updatedEvent = await prisma.$transaction(async (tx) => {
 
@@ -163,11 +172,27 @@ export const updateEvent = async (eventId: number, payload: UpdateEventPayload, 
             });
         }
 
+        if (media) {
+
+            await tx.media.deleteMany({
+                where: { eventId }
+            });
+
+            await tx.media.createMany({
+                data: media.map(link => ({
+                    eventId,
+                    name : link.name,
+                    url: link.url
+                }))
+            });
+        }
+
         return await tx.event.update({
             where: { id: eventId },
             data: eventData,
             include: {
                 socialLinks: true,
+                media : true,
                 organiser: {
                     select: {
                         id: true,
@@ -199,6 +224,10 @@ export const deleteEvent = async (eventId: number, organiserId: number) => {
 
     await prisma.$transaction(async (tx) => {
         await tx.socialLink.deleteMany({
+            where: { eventId }
+        });
+
+        await tx.media.deleteMany({
             where: { eventId }
         });
 

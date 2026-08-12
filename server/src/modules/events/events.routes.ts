@@ -16,6 +16,7 @@ router.get("/", eventController.getEvents);
 // Public
 router.get("/:eventId", eventController.getEvent);
 
+
 router.use(authenticate);
 
 // Get events created by the logged-in user

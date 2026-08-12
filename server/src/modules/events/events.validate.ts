@@ -49,14 +49,6 @@ export const createEventSchema = z.object({
         .max(10000, "Maximum tickets must be at most 10000")
         .optional(),
 
-    regLink: z
-        .url("Please provide a valid URL")
-        .optional(),
-
-    website: z
-        .url("Please provide a valid URL")
-        .optional(),
-
     socialLinks: z
         .array(
             z.object({
@@ -66,6 +58,16 @@ export const createEventSchema = z.object({
         )
         .max(5, "Maximum 5 social links allowed")
         .optional(),
+
+    media: z
+        .array(
+            z.object({
+                name: z.enum(["BANNER", "VIDEO", "LOGO", "IMAGE"]),
+                url: z.url("Please provide a valid URL"),
+            })
+        )
+        .max(6, "Maximum 6 social links allowed")
+        .min(1, "minimum logo required!"),
 
     location: z
         .string()
