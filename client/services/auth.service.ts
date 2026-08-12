@@ -6,9 +6,7 @@ export const getProfile = async () => {
 
     const response = await api("/auth/profile");
 
-    console.log(response);
-
-    return response;
+    return response.data;
 }
 
 export const loginService = async (from: LoginFrom) => {
@@ -18,7 +16,7 @@ export const loginService = async (from: LoginFrom) => {
         body: JSON.stringify(from)
     });
 
-    return response;
+    return response.data;
 }
 
 
@@ -29,5 +27,5 @@ export const registerService = async (form:RegistrForm) => {
         body: JSON.stringify(form)
     });
 
-    return response;
+    return response.data;
 }

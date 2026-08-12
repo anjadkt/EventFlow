@@ -14,3 +14,10 @@ export type LoginFrom = {
     email: string,
     password: string
 }
+
+export type FormField = {
+    name: string;
+    type: "text" | "email" | "password";
+    label: string;
+    placeholder: string;
+};

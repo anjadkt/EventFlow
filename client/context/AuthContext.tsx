@@ -16,7 +16,7 @@ type User = {
 
 type AuthContextType = {
     user: User | null;
-    isAuthenticated: boolean;
+    loading: boolean;
     setUser: (user: User | null) => void;
     authenticateUser: () => Promise<void>;
 };
@@ -26,16 +26,21 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export function AuthProvider({ children }: { children: ReactNode }) {
 
     const [user, setUser] = useState<User | null>(null);
-
-    const isAuthenticated = user !== null;
+    const [loading,setLoading] = useState(true);
 
     const authenticateUser = async () => {
         try {
-            const data = await getProfile();
-            console.log(data);
+            const user = await getProfile();
+            setUser({
+                id: user.id,
+                name: user.name,
+                email: user.email
+            });
         } catch (err: any) {
-            console.error("Failed to load profile:", err);
+            console.log("Failed to load profile:", err);
             setUser(null);
+        }finally{
+            setLoading(false);
         }
     };
 
@@ -47,8 +52,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         <AuthContext.Provider
             value={{
                 user,
+                loading,
                 authenticateUser,
-                isAuthenticated,
                 setUser,
             }}
         >
