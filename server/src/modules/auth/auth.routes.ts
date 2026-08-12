@@ -17,9 +17,9 @@ router.post("/register", validate(registerSchema), authController.register);
 router.post("/login", validate(loginSchema), authController.login);
 
 // Get access token
-// GET /api/auth/token
+// GET /api/auth/refresh
 // Public
-router.get("/token", authController.getToken);
+router.get("/refresh", authController.getToken);
 
 // Get logged in user
 // GET /api/auth/profile

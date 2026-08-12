@@ -14,6 +14,8 @@ export async function api(
     options?: RequestInit
 ): Promise<ResponseType> {
 
+    let retry = true ;
+
     const response = await fetch(`${API_URL}${endpoint}`, {
         ...options,
         credentials: "include",
@@ -21,6 +23,25 @@ export async function api(
             "Content-Type": "application/json"
         },
     });
+
+    if (response.status === 401 && retry) {
+
+        const refreshResponse = await fetch(
+          `${API_URL}/auth/refresh`,
+          {
+            credentials: "include",
+          }
+        );
+
+        const refreshData = await refreshResponse.json();
+    
+        if (!refreshResponse.ok) {
+            throw refreshData;
+        }
+
+        retry = false;
+        return api(endpoint, options);
+    }
 
     const data = await response.json();
 
