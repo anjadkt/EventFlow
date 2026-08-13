@@ -10,23 +10,26 @@ export type EventForm = {
   price: number | undefined;
   maxTickets: number | undefined;
 
-  socialLinks: {
-    platform:
-      | "INSTAGRAM"
-      | "TWITTER"
-      | "LINKEDIN"
-      | "FACEBOOK"
-      | "YOUTUBE"
-      | "TIKTOK";
-    url: string;
-  }[];
+  socialLinks: SocialLink[];
 
   location: string;
   locationLink: string;
   venueName: string;
-
-  status: "DRAFT" | "PUBLISHED" ;
+  helpEmail: string
 };
+
+export type SocialPlatforms = 
+| "INSTAGRAM"
+| "TWITTER"
+| "LINKEDIN"
+| "FACEBOOK"
+| "YOUTUBE"
+| "TIKTOK";
+
+export type SocialLink = {
+  platform: SocialPlatforms;
+  url: string;
+}
 
 export type MediaName = "BANNER" | "LOGO" | "THUMBNAIL";
 

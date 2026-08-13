@@ -9,27 +9,28 @@ import CreateGallery from "@/components/events/CreateGallery";
 import CreateContact from "@/components/events/CreateContact";
 import EventPublish from "@/components/events/EventPublish";
 import { STEPS } from "@/config/event.config";
-import { EventForm, EventMedia } from "@/types/event.types";
-import { overviewValidation } from "@/validations/event.validate";
+import { EventForm, EventMedia, SocialLink } from "@/types/event.types";
+import { contactSchma, overviewValidation } from "@/validations/event.validate";
 
 const initialState = {
-        title: "",
-        description: "",
+  title: "",
+  description: "",
 
-        startDate: "",
-        endDate: "",
-        deadline: "",
+  startDate: "",
+  endDate: "",
+  deadline: "",
 
-        price: "",
-        maxTickets: "",
+  price: "",
+  maxTickets: "",
 
-        location: "",
-        locationLink: "",
-        venueName: ""
+  location: "",
+  locationLink: "",
+  venueName: "",
+  helpEmail : ""
 }
 
 export default function EventCreate() {
-  const [currentStep, setCurrentStep] = useState(2);
+  const [currentStep, setCurrentStep] = useState(3);
   const [form, setForm] = useState<EventForm>({
 
       title: "",
@@ -48,13 +49,12 @@ export default function EventCreate() {
       location: "",
       locationLink: "",
       venueName: "",
-
-      status: "DRAFT",
+      helpEmail : ""
   });
   const [error, setError] = useState<any>(null);
   const [mediaError, setMediaError] = useState<null|string>(null);
   const [media, setMedia] = useState<EventMedia>([
-    { name: "LOGO", file: null },
+    {name: "LOGO", file: null },
     {name : "THUMBNAIL", file : null},
     {name : "BANNER", file : null}
   ]);
@@ -106,9 +106,11 @@ export default function EventCreate() {
 
   const validate = (formData: EventForm = form) => {
     
-    const schema = overviewValidation 
+    const schema = currentStep === 1 ? overviewValidation : contactSchma;
 
-      const data = schema.safeParse(formData);
+    const data = schema.safeParse(formData);
+    
+    console.log(data);
     
       if (!data.success) {
       
@@ -151,7 +153,7 @@ export default function EventCreate() {
 
   const handleNext = () => {
     
-    if (currentStep === 1 && !validate()) return;
+    if ((currentStep === 1 || currentStep === 3) && !validate()) return;
     if (currentStep === 2 && !mediaValidate()) return;
 
     if (currentStep < STEPS.length) {
@@ -251,7 +253,12 @@ export default function EventCreate() {
         )}
 
         {currentStep === 3 && (
-          <CreateContact />
+          <CreateContact
+            data={form}
+            errors={error}
+            onChange={handleChange}
+            handleSocials={(socialLinks:SocialLink[]) => { setForm(pre => ({ ...pre, socialLinks })) }}
+          />
         )}
 
         {currentStep === 4 && (

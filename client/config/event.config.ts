@@ -1,4 +1,5 @@
-import { MediaConfigItem, MediaName } from "@/types/event.types";
+import { MediaConfigItem, MediaName, SocialPlatforms } from "@/types/event.types";
+import { MessageCircle } from "lucide-react";
 
 export const STEPS = [
   { step: 1, label: "Overview", description: "Basic details & title" },
@@ -47,3 +48,12 @@ export const MEDIA_CONFIG: Record<MediaName, MediaConfigItem> = {
     accept: "image/png, image/jpeg, image/webp",
   }
 };
+
+
+export const SOCIAL_PLATFORMS: { value: SocialPlatforms; label: string; icon: React.ElementType }[] = [
+  { value: "INSTAGRAM" as SocialPlatforms, label: "Instagram", icon: MessageCircle },
+  { value: "TWITTER" as SocialPlatforms, label: "Twitter / X", icon: MessageCircle },
+  { value: "LINKEDIN" as SocialPlatforms, label: "LinkedIn", icon: MessageCircle },
+  { value: "FACEBOOK" as SocialPlatforms, label: "Facebook", icon: MessageCircle },
+  { value: "YOUTUBE" as SocialPlatforms, label: "YouTube", icon: MessageCircle },
+];

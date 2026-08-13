@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const createEventSchema = z.object({
+export const contactSchma = z.object({
 
     location: z
         .string()
@@ -10,9 +10,11 @@ export const createEventSchema = z.object({
 
     locationLink: z
         .url("Please provide a valid URL"),
+    
+    helpEmail :z.email("Email Required!").min(4,"Enter a valid email"),
 
     venueName: z
-        .string()
+        .string("venue required!")
         .min(3, "Venue name must be at least 3 characters long")
         .max(100, "Venue name must not exceed 100 characters")
         .trim()
