@@ -7,6 +7,9 @@ export const errorMiddleware = (
   res: Response,
   _next: NextFunction
 ) => {
+
+  console.log(err);
+  
   res.status(err.statusCode || 500).json({
     status: err.statusCode || 500,
     success: false,

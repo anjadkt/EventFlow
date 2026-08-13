@@ -15,34 +15,36 @@ export const createEventSchema = z.object({
 
     startDate: z
         .coerce
-        .date()
+        .date("Event starting date required")
         .refine((date) => !isNaN(date.getTime()), { message: "Invalid date" })
         .refine((date) => date.getTime() > Date.now(), "Start date must be in the future")
         .refine((date) => date.getTime() < Date.now() + 60 * 24 * 60 * 60 * 1000, "Start date must be within two months"),
 
     endDate: z
         .coerce
-        .date()
+        .date("Event ending date required")
         .refine((date) => !isNaN(date.getTime()), { message: "Invalid date" })
         .refine((date) => date.getTime() > Date.now(), "End date must be in the future"),
 
     deadline: z
         .coerce
-        .date()
+        .date("Event registration deadline required")
         .refine((date) => !isNaN(date.getTime()), { message: "Invalid date" })
         .refine((date) => date.getTime() > Date.now(), "deadline must be in the future"),
 
     isFree: z.boolean().default(true),
 
     price: z
-        .number()
+        .coerce
+        .number("need a valid price")
         .positive("Price must be positive")
         .min(10, "Minimum price must be at least 10")
         .max(1000000, "Maximum price must be at most 1000000")
         .optional(),
 
     maxTickets: z
-        .number()
+        .coerce
+        .number("Need a valid number")
         .int("Max tickets must be an integer")
         .positive("Max tickets must be positive")
         .min(10, "Minimum tickets must be at least 10")
@@ -62,7 +64,7 @@ export const createEventSchema = z.object({
     media: z
         .array(
             z.object({
-                name: z.enum(["BANNER", "VIDEO", "LOGO", "IMAGE"]),
+                name: z.enum(["BANNER", "THUMBNAIL", "LOGO", "IMAGE"]),
                 url: z.url("Please provide a valid URL"),
             })
         )

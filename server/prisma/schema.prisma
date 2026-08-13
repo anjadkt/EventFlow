@@ -73,7 +73,7 @@ model Media {
 
 enum MediaNames {
   BANNER
-  VIDEO
+  THUMBNAIL
   LOGO
   IMAGE
 }

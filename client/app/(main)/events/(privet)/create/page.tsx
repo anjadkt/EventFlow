@@ -9,8 +9,10 @@ import CreateGallery from "@/components/events/CreateGallery";
 import CreateContact from "@/components/events/CreateContact";
 import EventPublish from "@/components/events/EventPublish";
 import { STEPS } from "@/config/event.config";
-import { EventForm, EventMedia, SocialLink } from "@/types/event.types";
+import { EventData, EventForm, EventMedia, EventMediaType, SocialLink } from "@/types/event.types";
 import { contactSchma, overviewValidation } from "@/validations/event.validate";
+import { createEvent } from "@/services/event.service";
+import { uploadToCloudinary } from "@/lib/cloudinary";
 
 const initialState = {
   title: "",
@@ -29,35 +31,42 @@ const initialState = {
   helpEmail : ""
 }
 
+const mediaState = [
+  {name: "LOGO", file: null },
+  {name : "THUMBNAIL", file : null},
+  {name : "BANNER", file : null}
+] as EventMedia
+
+const formState = {
+
+  title: "",
+  description: "",
+
+  startDate: "",
+  endDate: "",
+  deadline: "",
+
+  isFree: true,
+  price: undefined,
+  maxTickets: undefined,
+
+  socialLinks: [],
+
+  location: "",
+  locationLink: "",
+  venueName: "",
+  helpEmail : ""
+} as EventForm
+
 export default function EventCreate() {
-  const [currentStep, setCurrentStep] = useState(3);
-  const [form, setForm] = useState<EventForm>({
 
-      title: "",
-      description: "",
-
-      startDate: "",
-      endDate: "",
-      deadline: "",
-
-      isFree: true,
-      price: undefined,
-      maxTickets: undefined,
-
-      socialLinks: [],
-
-      location: "",
-      locationLink: "",
-      venueName: "",
-      helpEmail : ""
-  });
+  const [currentStep, setCurrentStep] = useState(1);
+  const [form, setForm] = useState<EventForm>(formState);
   const [error, setError] = useState<any>(null);
   const [mediaError, setMediaError] = useState<null|string>(null);
-  const [media, setMedia] = useState<EventMedia>([
-    {name: "LOGO", file: null },
-    {name : "THUMBNAIL", file : null},
-    {name : "BANNER", file : null}
-  ]);
+  const [media, setMedia] = useState<EventMedia>(mediaState);
+  const [declaration, setDeclaration] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 
@@ -103,15 +112,16 @@ export default function EventCreate() {
       )
     );
   };
+  console.log(error);
 
   const validate = (formData: EventForm = form) => {
     
     const schema = currentStep === 1 ? overviewValidation : contactSchma;
 
     const data = schema.safeParse(formData);
-    
+
     console.log(data);
-    
+        
       if (!data.success) {
       
           const errorMessages = {...initialState};
@@ -149,17 +159,47 @@ export default function EventCreate() {
     return true;
   }
 
+  const handleCreation = async () => {
+    try {
+
+      setLoading(true);
+
+      const filteredData = media.filter(v => v.file);
+      const mediaData:EventMediaType[] = [];
+
+      for (const v of filteredData) {
+        const url = await uploadToCloudinary(v.file);
+        mediaData.push({ url, name: v.name });
+      }
+
+      console.log(mediaData)
+
+      const eventData:EventData = {...form, media:mediaData, status:"PUBLISHED"}
+      const data = await createEvent(eventData);
+
+      setTimeout(() => {
+        router.push(`events/${data.slug}`)
+      }, 1000);
+    
+    } catch (error) {
+      console.log("Error while creating event",error)
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const router = useRouter();
 
   const handleNext = () => {
     
-    if ((currentStep === 1 || currentStep === 3) && !validate()) return;
+    if ((currentStep === 1 ) && !validate()) return;
     if (currentStep === 2 && !mediaValidate()) return;
+    if (currentStep === 3 && !validate()) return;
 
     if (currentStep < STEPS.length) {
       setCurrentStep((prev) => prev + 1);
     } else {
-      console.log("Publishing Event...");
+      handleCreation();
     }
   };
 
@@ -262,7 +302,10 @@ export default function EventCreate() {
         )}
 
         {currentStep === 4 && (
-          <EventPublish />
+          <EventPublish
+            declaration={declaration}
+            onChange={() => setDeclaration((prev) => !prev)}
+          />
         )}
       </main>
 
@@ -299,7 +342,8 @@ export default function EventCreate() {
           )}
 
           <Button
-            disabled={error || mediaError}
+            disabled={error || mediaError || (currentStep === 4 && !declaration) || loading}
+            loading={loading}
             onClick={handleNext}
             className="px-5 py-2.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 border border-indigo-500/30 rounded-xl shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/50 gap-2 transition-all active:scale-95"
           >

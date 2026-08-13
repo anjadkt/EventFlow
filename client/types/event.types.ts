@@ -18,6 +18,8 @@ export type EventForm = {
   helpEmail: string
 };
 
+export type EventStatus = "DRAFT" | "PUBLISHED" | "CANCELLED" | "COMPLETED"
+
 export type SocialPlatforms = 
 | "INSTAGRAM"
 | "TWITTER"
@@ -45,4 +47,9 @@ export type MediaConfigItem = {
   specs: string[];
   accept: string;
 };
+
+export type EventMediaType = { name: MediaName, url:string}
+
+
+export type EventData = EventForm & { media :EventMediaType[] } & { status : EventStatus }
 
