@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Input from "@/components/ui/Input";
 import { DollarSign, FileText, Clock } from "lucide-react";
 import { EventForm } from "@/types/event.types";

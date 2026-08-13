@@ -26,110 +26,148 @@ const initialState = {
         location: "",
         locationLink: "",
         venueName: ""
-    }
+}
 
 export default function EventCreate() {
-    const [currentStep, setCurrentStep] = useState(1);
-    const [form, setForm] = useState<EventForm>({
+  const [currentStep, setCurrentStep] = useState(2);
+  const [form, setForm] = useState<EventForm>({
 
-        title: "",
-        description: "",
+      title: "",
+      description: "",
 
-        startDate: "",
-        endDate: "",
-        deadline: "",
+      startDate: "",
+      endDate: "",
+      deadline: "",
 
-        isFree: true,
-        price: undefined,
-        maxTickets: undefined,
+      isFree: true,
+      price: undefined,
+      maxTickets: undefined,
 
-        socialLinks: [],
+      socialLinks: [],
 
-        location: "",
-        locationLink: "",
-        venueName: "",
+      location: "",
+      locationLink: "",
+      venueName: "",
 
-        status: "DRAFT",
-    });
-    const [error, setError] = useState<any>(null);
-    const [media, setMedia] = useState<EventMedia>([]);
+      status: "DRAFT",
+  });
+  const [error, setError] = useState<any>(null);
+  const [mediaError, setMediaError] = useState<null|string>(null);
+  const [media, setMedia] = useState<EventMedia>([
+    { name: "LOGO", file: null },
+    {name : "THUMBNAIL", file : null},
+    {name : "BANNER", file : null}
+  ]);
 
-  console.log(form);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-
-        const { name, value } = e.target;
-        const updatedForm = {
-          ...form,
-          [name]: value,
-        };
-      
-        setForm(updatedForm);
-      
-        if (validate(updatedForm)) return setError(null);
-      
-        setError((pre:any) => ({...pre , [name] : ""}))
-    }
-
-    const handleFreeToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const checked = e.target.checked;
-        setForm(pre => ({ ...pre, isFree: checked }));
-        
-      if (checked) {
-          setForm(pre => ({...pre , price : 0}));
-      } else {
-          setForm(pre => ({...pre , price : 30}));
-      }
-    };
-  
-    const validate = (formData: EventForm = form) => {
-      
-        const schema = overviewValidation;
-
-        const data = schema.safeParse(formData);
-      
-        if (!data.success) {
-        
-            const errorMessages = {...initialState};
-
-            for (const issue of data.error.issues) {
-
-                const field = issue.path[0] as keyof typeof initialState;
-
-                if (field in errorMessages && !errorMessages[field]) {
-                    errorMessages[field] = issue.message;
-                }
-            }
-
-            setError(errorMessages);
-            return false;
-        }
+      const { name, value } = e.target;
+      const updatedForm = {
+        ...form,
+        [name]: value,
+      };
     
-        setError(null);
-        return true;
-          
+      setForm(updatedForm);
+    
+      if (validate(updatedForm)) return setError(null);
+    
+      setError((pre:any) => ({...pre , [name] : ""}))
+  }
+
+  const handleFreeToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = e.target.checked;
+      setForm(pre => ({ ...pre, isFree: checked }));
+      
+    if (checked) {
+        setForm(pre => ({...pre , price : 0}));
+    } else {
+        setForm(pre => ({...pre , price : 30}));
+    }
+  };
+
+  const handleFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    name: "LOGO" | "BANNER" | "THUMBNAIL"
+  ) => {
+    const file = e.target.files?.[0];
+  
+    if (!file) return;
+
+    setMediaError(null);
+  
+    setMedia((prev) =>
+      prev.map((item) =>
+        item.name === name
+          ? { ...item, file }
+          : item
+      )
+    );
+  };
+
+  const validate = (formData: EventForm = form) => {
+    
+    const schema = overviewValidation 
+
+      const data = schema.safeParse(formData);
+    
+      if (!data.success) {
+      
+          const errorMessages = {...initialState};
+
+          for (const issue of data.error.issues) {
+
+              const field = issue.path[0] as keyof typeof initialState;
+
+              if (field in errorMessages && !errorMessages[field]) {
+                  errorMessages[field] = issue.message;
+              }
+          }
+
+          setError(errorMessages);
+          return false;
+      }
+  
+      setError(null);
+      return true;
+        
+  }
+
+  const mediaValidate = () => {
+
+    const data = media.filter((v) => (v.name=== "LOGO" && !!v.file) || (v.name === "THUMBNAIL" && !!v.file))
+
+    console.log(data,media);
+
+    if (data.length !== 2) {
+      setMediaError("Logo & Thumbnail required!");
+      return false;
     }
 
-    const router = useRouter();
+    setMediaError("");
+    return true;
+  }
 
-    const handleNext = () => {
-      
-      if (!validate()) return;
+  const router = useRouter();
 
-      if (currentStep < STEPS.length) {
-        setCurrentStep((prev) => prev + 1);
-      } else {
-        console.log("Publishing Event...");
+  const handleNext = () => {
+    
+    if (currentStep === 1 && !validate()) return;
+    if (currentStep === 2 && !mediaValidate()) return;
+
+    if (currentStep < STEPS.length) {
+      setCurrentStep((prev) => prev + 1);
+    } else {
+      console.log("Publishing Event...");
+    }
+  };
+
+  const handleBack = () => {
+      if (currentStep > 1) {
+      setCurrentStep((prev) => prev - 1);
       }
-    };
+  };
 
-    const handleBack = () => {
-        if (currentStep > 1) {
-        setCurrentStep((prev) => prev - 1);
-        }
-    };
-
-    return (
+  return (
     <div className="max-w-5xl mx-auto space-y-8 pb-10">
       {/* Step Wizard Header */}
       <header className="bg-slate-900/80 border border-slate-700 backdrop-blur-md rounded-2xl p-6 shadow-xl space-y-6">
@@ -205,7 +243,11 @@ export default function EventCreate() {
         )}
 
         {currentStep === 2 && (
-          <CreateGallery />
+          <CreateGallery 
+              error={mediaError}
+              gallery={media}
+              onFileChange={handleFileChange}
+          />
         )}
 
         {currentStep === 3 && (
@@ -250,7 +292,7 @@ export default function EventCreate() {
           )}
 
           <Button
-            disabled={error}
+            disabled={error || mediaError}
             onClick={handleNext}
             className="px-5 py-2.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 border border-indigo-500/30 rounded-xl shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/50 gap-2 transition-all active:scale-95"
           >

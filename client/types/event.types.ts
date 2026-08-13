@@ -28,8 +28,18 @@ export type EventForm = {
   status: "DRAFT" | "PUBLISHED" ;
 };
 
+export type MediaName = "BANNER" | "LOGO" | "THUMBNAIL";
+
 export type EventMedia = {
-    name: "BANNER" | "VIDEO" | "LOGO" | "IMAGE";
-    file: File;
+    name: MediaName;
+    file?: File | string | null;
 }[]
+
+export type MediaConfigItem = {
+  key: string;
+  title: string;
+  specsTitle: string;
+  specs: string[];
+  accept: string;
+};
 
