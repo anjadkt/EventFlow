@@ -53,3 +53,17 @@ export type EventMediaType = { name: MediaName, url:string}
 
 export type EventData = EventForm & { media :EventMediaType[] } & { status : EventStatus }
 
+export type EventListItem = {
+  id: number;
+  title: string;
+  slug: string;
+  startDate: string;
+  endDate: string;
+  venueName: string;
+  location: string;
+  isFree: boolean;
+  price: number;
+  status: string;
+  media: EventMediaType[];
+  organiser: { name: string };
+};

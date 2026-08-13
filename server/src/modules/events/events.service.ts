@@ -36,6 +36,7 @@ export const createEvent = async (payload: CreateEventPayload, organiserId: numb
         },
         include: {
             socialLinks: true,
+            media: true,
             organiser: {
                 select: {
                     id: true,

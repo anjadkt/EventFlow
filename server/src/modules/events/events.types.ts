@@ -4,7 +4,7 @@ export type EventStatus = "DRAFT" | "PUBLISHED" | "CANCELLED" | "COMPLETED";
 
 export type RSVPStatus = "GOING" | "MAYBE_GOING" | "NOT_GOING";
 
-export type MediaNames = "IMAGE" | "LOGO" | "BANNER" | "VIDEO"
+export type MediaNames = "IMAGE" | "LOGO" | "BANNER" | "THUMBNAIL"
 
 export type SocialLinkInput = {
     platform: SocialPlatform;
