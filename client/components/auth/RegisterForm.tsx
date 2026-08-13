@@ -113,6 +113,8 @@ export default function RegisterForm({ toggle }: { toggle: () => void}) {
         {
             registerFields.map((field, index) => (
                 <Input
+                    labelClassName="text-white font-bold"
+                    className="mt-1"
                     key={index}
                     type={field.type}
                     placeholder={field.placeholder}

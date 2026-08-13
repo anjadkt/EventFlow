@@ -71,9 +71,12 @@ export default function EventCreate() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 
       const { name, value } = e.target;
+      const parsedValue = ["price", "maxTickets"].includes(name)
+        ? (value === "" ? undefined : Number(value))
+        : value;
       const updatedForm = {
         ...form,
-        [name]: value,
+        [name]: parsedValue,
       };
     
       setForm(updatedForm);
@@ -88,7 +91,7 @@ export default function EventCreate() {
       setForm(pre => ({ ...pre, isFree: checked }));
       
     if (checked) {
-        setForm(pre => ({...pre , price : 0}));
+        setForm(pre => ({...pre , price : undefined}));
     } else {
         setForm(pre => ({...pre , price : 30}));
     }
@@ -178,7 +181,7 @@ export default function EventCreate() {
       const data = await createEvent(eventData);
 
       setTimeout(() => {
-        router.push(`events/${data.slug}`)
+        router.push(`/events/${data.slug}`)
       }, 1000);
     
     } catch (error) {

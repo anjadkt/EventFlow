@@ -112,6 +112,8 @@ export default function LoginForm({ toggle }: { toggle: () => void}) {
                         <Input
                             key={index}
                             type={field.type}
+                            labelClassName="text-white font-bold"
+                            className="mt-1"
                             placeholder={field.placeholder}
                             value={form[field.name as keyof LoginFrom]}
                             onChange={handleChange}
