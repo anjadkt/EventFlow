@@ -84,20 +84,6 @@ export const createEventSchema = z.object({
         .max(100, "Venue name must not exceed 100 characters")
         .trim(),
 
-    bannerImage: z
-        .string()
-        .url("Please provide a valid banner image URL")
-        .or(z.literal(""))
-        .optional()
-        .default(""),
-
-    logoImage: z
-        .string()
-        .url("Please provide a valid logo image URL")
-        .or(z.literal(""))
-        .optional()
-        .default(""),
-
     status: z.enum(["DRAFT", "PUBLISHED", "CANCELLED", "COMPLETED"]).default("DRAFT")
 })
     .refine((data) => data.isFree ? !data.price : true, {

@@ -119,7 +119,7 @@ export const token = async (refreshToken: string) => {
     });
 
     if (!user || user.token !== refreshToken) {
-        throw new ApiError(401, "Invalid refresh token");
+        throw new ApiError(403, "Invalid refresh token");
     }
 
     const accessToken = genAccessToken({ id: user.id, email: user.email });
