@@ -5,9 +5,11 @@ import React from "react";
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
+  labelClassName ?: string
 }
 
-export default function Input({ label, error, className = "", id, ...props }: InputProps) {
+export default function Input({ labelClassName = "", label, error, className = "", id, ...props }: InputProps) {
+
   const inputId = id || props.name;
 
   return (
@@ -15,7 +17,7 @@ export default function Input({ label, error, className = "", id, ...props }: In
       {label && (
         <label
           htmlFor={inputId}
-          className="block text-xs font-semibold text-slate-700 dark:text-slate-300"
+          className={`"block text-xs font-semibold text-slate-700 dark:text-slate-300" ${labelClassName}`}
         >
           {label}
         </label>
