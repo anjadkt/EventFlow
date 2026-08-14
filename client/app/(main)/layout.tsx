@@ -11,7 +11,7 @@ export default function MainLayout({
 
       <Header />
 
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 pt-24 pb-12 sm:pb-16">
+      <main className="flex-1 w-full mx-auto pt-20">
         {children}
       </main>
 

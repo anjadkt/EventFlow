@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Calendar, MapPin, ArrowRight, User } from "lucide-react";
 import { EventListItem } from "@/types/event.types";
+import {formatDate} from "@/utils/formatDate";
 
 type EventCardProps = {
   event: EventListItem;
@@ -11,15 +12,6 @@ export default function EventCard({ event }: EventCardProps) {
   const thumbnailMedia = event.media?.find((m) => m.name === "THUMBNAIL");
   const imageUrl = thumbnailMedia?.url || "/images/event-placeholder.jpg";
 
-  const formatDate = (dateString: string) => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    }).format(date);
-  };
 
   return (
     <div className="group flex flex-col bg-slate-900/90 border border-slate-800 hover:border-indigo-500/50 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/10">

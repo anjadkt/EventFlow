@@ -67,3 +67,33 @@ export type EventListItem = {
   media: EventMediaType[];
   organiser: { name: string };
 };
+
+
+export type Organiser = {
+  id: number;
+  name: string;
+  email: string;
+};
+
+
+export type EventDetail = {
+  id: number;
+  title: string;
+  slug: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  deadline: string;
+  venueName: string;
+  location: string;
+  locationLink?: string;
+  isFree: boolean;
+  price: number;
+  maxTickets: number;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  media: EventMediaType[];
+  organiser: Organiser;
+  socialLinks: SocialLink[];
+};
