@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { formatDate, formatFullDateTime, formatTime } from "@/utils/formatDate";
 import EventAttendees from "@/components/events/EventAttendees";
+import EventRsvpCta from "@/components/events/EventRsvp";
 
 type Props = {
   params: Promise<{
@@ -44,7 +45,7 @@ export default async function EventPage({ params }: Props) {
   const logoUrl = logoMedia?.url;
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 pb-[200px]">
+    <main className="min-h-screen bg-slate-950 text-slate-100 px-4 md:px-8 lg:px-10 pb-[200px]">
       {/* 1. HEADER & HERO BANNER SECTION */}
       <section className="relative w-full border-b border-slate-800/40">
         
@@ -71,7 +72,8 @@ export default async function EventPage({ params }: Props) {
 
         {/* Hero Content Overlay */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-28 sm:-mt-36 relative z-10 pb-10">
-          <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
+          
+          <div className="flex flex-col md:flex-row items-start md:items-center pt-4 justify-between gap-6 pr-10">
             
             {/* Title, Logo, Event Date, Pricing */}
             <div className="flex flex-col sm:flex-row items-start gap-5 w-full md:w-auto">
@@ -116,22 +118,11 @@ export default async function EventPage({ params }: Props) {
             </div>
 
             {/* Deadline & RSVP Action Card */}
-            <div className="w-full md:w-auto border border-slate-800/60 bg-slate-900/30 p-5 rounded-2xl flex flex-col sm:flex-row md:flex-col items-stretch sm:items-center md:items-stretch gap-4 shrink-0 backdrop-blur-sm">
-              <div className="text-xs space-y-1">
-                <div className="flex items-center gap-1.5 text-amber-400/90 font-medium">
-                  <AlertCircle className="w-3.5 h-3.5" />
-                  <span>Final day to RSVP</span>
-                </div>
-                <p className="text-slate-200 font-medium">
-                  {formatFullDateTime(event.deadline)}
-                </p>
-              </div>
-
-              <button className="w-full py-3 px-6 bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] text-white font-semibold text-sm rounded-xl transition-all shadow-lg shadow-indigo-600/25 flex items-center justify-center gap-2">
-                <span>Register Now</span>
-                <CheckCircle2 className="w-4 h-4" />
-              </button>
-            </div>
+            <EventRsvpCta
+              organiserId={event.organiser.id}
+              eventId={event.id}
+              deadline={event.deadline}
+            />
 
           </div>
         </div>
@@ -300,7 +291,7 @@ export default async function EventPage({ params }: Props) {
                     <div className="flex items-center gap-2">
                       {event.socialLinks.map((link, idx) => (
                         <a
-                          key={idx}
+                          key={`${link.platform}-${idx}`}
                           href={link.url || "#"}
                           target="_blank"
                           rel="noopener noreferrer"
@@ -319,6 +310,7 @@ export default async function EventPage({ params }: Props) {
           ),
           attendees: (
             <EventAttendees
+              key={event.id}
               id={event.id}
               maxTickets={event.maxTickets}
             />

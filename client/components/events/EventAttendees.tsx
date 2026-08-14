@@ -61,17 +61,17 @@ export default function EventAttendees({ id, maxTickets }: Props) {
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {attendeesList.map((rsvp: any, i: number) => (
+                {attendeesList.map((rsvp: any) => (
                   <div
-                    key={i}
+                    key={rsvp.user.id}
                     className="flex items-center gap-3 p-3 rounded-xl bg-slate-950/60 border border-slate-800"
                   >
                     <div className="w-8 h-8 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center font-bold text-xs">
-                      {rsvp.name ? rsvp.name.charAt(0) : "A"}
+                      {rsvp.user.name ? rsvp.user.name.charAt(0) : "A"}
                     </div>
                     <div className="truncate">
                       <p className="text-xs font-semibold text-white truncate">
-                        {rsvp.name || "Anonymous Attendee"}
+                        {rsvp.user.name || "Anonymous Attendee"}
                       </p>
                     </div>
                   </div>
