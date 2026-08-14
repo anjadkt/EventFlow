@@ -208,44 +208,6 @@ export const updateEvent = async (eventId: number, payload: UpdateEventPayload, 
     return updatedEvent;
 };
 
-// Delete an event
-export const deleteEvent = async (eventId: number, organiserId: number) => {
-
-    const event = await prisma.event.findUnique({
-        where: { id: eventId }
-    });
-
-    if (!event) {
-        throw new ApiError(404, "Event not found");
-    }
-
-    if (event.organiserId !== organiserId) {
-        throw new ApiError(403, "You are not authorized to delete this event");
-    }
-
-    await prisma.$transaction(async (tx) => {
-        await tx.socialLink.deleteMany({
-            where: { eventId }
-        });
-
-        await tx.media.deleteMany({
-            where: { eventId }
-        });
-
-        await tx.rsvp.deleteMany({
-            where: { eventId }
-        });
-
-        await tx.event.delete({
-            where: { id: eventId }
-        });
-    });
-
-    return {
-        message: "Event deleted successfully"
-    };
-};
-
 // get users attending the event
 export const getAttendees = async (eventId: number, organiserId: number) => {
 

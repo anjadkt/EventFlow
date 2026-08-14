@@ -32,7 +32,6 @@ export const getEachEvent = async (slug:string) => {
   return res.data;
 }
 
-
 export const getAttendees = async (id: number) => {
   
   const res = await api(`/events/${id}/attendees`,{
@@ -41,4 +40,11 @@ export const getAttendees = async (id: number) => {
 
   return res.data;
 
+}
+
+export const getMyEvents = async () => {
+  
+  const res = await api("/events/my-events");
+
+  return res.data;
 }

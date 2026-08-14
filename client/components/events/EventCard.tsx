@@ -1,17 +1,17 @@
 import Link from "next/link";
-import { Calendar, MapPin, ArrowRight, User } from "lucide-react";
+import { Calendar, MapPin, ArrowRight, User, Edit3 } from "lucide-react";
 import { EventListItem } from "@/types/event.types";
-import {formatDate} from "@/utils/formatDate";
+import { formatDate } from "@/utils/formatDate";
 
 type EventCardProps = {
   event: EventListItem;
+  showEdit?: boolean;
 };
 
-export default function EventCard({ event }: EventCardProps) {
-
+export default function EventCard({ event, showEdit = false }: EventCardProps) {
+  
   const thumbnailMedia = event.media?.find((m) => m.name === "THUMBNAIL");
   const imageUrl = thumbnailMedia?.url || "/images/event-placeholder.jpg";
-
 
   return (
     <div className="group flex flex-col bg-slate-900/90 border border-slate-800 hover:border-indigo-500/50 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/10">
@@ -66,15 +66,26 @@ export default function EventCard({ event }: EventCardProps) {
           <p className="line-clamp-1">{event.venueName || event.location}</p>
         </div>
 
-        {/* Card Footer: View Event CTA */}
-        <div className="pt-2 border-t border-slate-800/80 mt-auto">
+        {/* Card Footer Actions */}
+        <div className="pt-3 border-t border-slate-800/80 mt-auto flex items-center gap-2">
           <Link
             href={`/events/${event.slug}`}
-            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold text-slate-200 bg-slate-800/80 hover:bg-indigo-600 hover:text-white border border-slate-700/80 hover:border-indigo-500 transition-all group/btn"
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-semibold text-slate-200 bg-slate-800/80 hover:bg-indigo-600 hover:text-white border border-slate-700/80 hover:border-indigo-500 transition-all group/btn"
           >
             <span>View Event</span>
             <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
           </Link>
+
+          {/* Edit Button  */}
+          {showEdit && (
+            <Link
+              href={`/events/${event.slug}/edit`} 
+              title="Edit Event"
+              className="flex items-center justify-center p-2.5 rounded-xl text-slate-300 bg-slate-800/80 hover:bg-slate-700 hover:text-white border border-slate-700/80 transition-all"
+            >
+              <Edit3 className="w-4 h-4" />
+            </Link>
+          )}
         </div>
       </div>
     </div>

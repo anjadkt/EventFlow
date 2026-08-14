@@ -40,16 +40,6 @@ export const updateEvent = catchAsync(async (req: Request, res: Response) => {
     res.status(200).json(new ApiResponse(200, event, "Event updated successfully"));
 });
 
-export const deleteEvent = catchAsync(async (req: Request, res: Response) => {
-
-    const eventId = Number(req.params.eventId);
-    const organiserId = Number(req.user?.id);
-
-    const result = await eventService.deleteEvent(eventId, organiserId);
-
-    res.status(200).json(new ApiResponse(200, null, result.message));
-});
-
 export const getMyEvents = catchAsync(async (req: Request, res: Response) => {
 
     const organiserId = Number(req.user?.id);

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { User, PlusCircle, LogOut } from "lucide-react";
+import { User, PlusCircle, LogOut, Calendar } from "lucide-react";
 import Link from "next/link";
 import { logoutService } from "@/services/auth.service";
 import { useAuth } from "@/hooks/useAuth";
@@ -76,14 +76,15 @@ export default function ProfileDropDown() {
           )}
 
           <div className="py-1">
-            {/* Profile Action */}
+
+            {/* My Events Action */}
             <Link
-              href="/profile"
+              href="/my-events"
               onClick={() => setIsOpen(false)}
               className="flex items-center gap-3 px-4 py-2.5 text-sm font-medium hover:bg-slate-800 hover:text-white transition-colors"
             >
-              <User className="w-4 h-4 text-slate-400" />
-              <span>Profile</span>
+              <Calendar className="w-4 h-4 text-slate-400" />
+              <span>My Events</span>
             </Link>
 
             {/* Create Event Action */}

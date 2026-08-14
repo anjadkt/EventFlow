@@ -1,3 +1,4 @@
+import { FacebookIcon, InstagramIcon, LinkedInIcon, TwitterXIcon, YoutubeIcon } from "@/components/ui/Icons";
 import { MediaConfigItem, MediaName, SocialPlatforms } from "@/types/event.types";
 import { MessageCircle } from "lucide-react";
 
@@ -50,10 +51,14 @@ export const MEDIA_CONFIG: Record<MediaName, MediaConfigItem> = {
 };
 
 
-export const SOCIAL_PLATFORMS: { value: SocialPlatforms; label: string; icon: React.ElementType }[] = [
-  { value: "INSTAGRAM" as SocialPlatforms, label: "Instagram", icon: MessageCircle },
-  { value: "TWITTER" as SocialPlatforms, label: "Twitter / X", icon: MessageCircle },
-  { value: "LINKEDIN" as SocialPlatforms, label: "LinkedIn", icon: MessageCircle },
-  { value: "FACEBOOK" as SocialPlatforms, label: "Facebook", icon: MessageCircle },
-  { value: "YOUTUBE" as SocialPlatforms, label: "YouTube", icon: MessageCircle },
+export const SOCIAL_PLATFORMS: {
+  value: SocialPlatforms;
+  label: string;
+  icon: React.ElementType;
+}[] = [
+  { value: "INSTAGRAM" as SocialPlatforms, label: "Instagram", icon: InstagramIcon },
+  { value: "TWITTER" as SocialPlatforms, label: "Twitter / X", icon: TwitterXIcon },
+  { value: "LINKEDIN" as SocialPlatforms, label: "LinkedIn", icon: LinkedInIcon },
+  { value: "FACEBOOK" as SocialPlatforms, label: "Facebook", icon: FacebookIcon },
+  { value: "YOUTUBE" as SocialPlatforms, label: "YouTube", icon: YoutubeIcon },
 ];

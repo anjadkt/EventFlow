@@ -11,38 +11,31 @@ const router = Router();
 // Public
 router.get("/", eventController.getEvents);
 
+// Get events created by the logged-in user
+// GET /api/events/my-events
+// Private
+router.get("/my-events",authenticate, eventController.getMyEvents);
+
 // Get a single event by ID
 // GET /api/events/:eventId
 // Public
 router.get("/:slug", eventController.getEvent);
 
 
-router.use(authenticate);
-
-// Get events created by the logged-in user
-// GET /api/events/my-events
-// Private
-router.get("/my-events", eventController.getMyEvents);
-
 // Create a new event
 // POST /api/events
 // Private
-router.post("/", validate(createEventSchema), eventController.createEvent);
+router.post("/",authenticate, validate(createEventSchema), eventController.createEvent);
 
 // Update an event
 // PUT /api/events/:eventId
 // Private
-router.put("/:eventId", validate(updateEventSchema), eventController.updateEvent);
-
-// Delete an event
-// DELETE /api/events/:eventId
-// Private
-router.delete("/:eventId", eventController.deleteEvent);
+router.put("/:eventId",authenticate, validate(updateEventSchema), eventController.updateEvent);
 
 // Get attendees of an event
 // GET /api/events/:eventId/attendees
 // Private
-router.get("/:eventId/attendees", eventController.getEventAttendees);
+router.get("/:eventId/attendees",authenticate, eventController.getEventAttendees);
 
 
 export default router;
