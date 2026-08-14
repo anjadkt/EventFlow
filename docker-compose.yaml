@@ -23,6 +23,7 @@ services:
       - ./server/.env
     volumes:
       - ./server:/app
+      - /app/.next
       - /app/node_modules
 
   client:
