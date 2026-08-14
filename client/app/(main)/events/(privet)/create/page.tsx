@@ -8,10 +8,10 @@ import CreateOverview from "@/components/events/CreateOverview";
 import CreateGallery from "@/components/events/CreateGallery";
 import CreateContact from "@/components/events/CreateContact";
 import EventPublish from "@/components/events/EventPublish";
-import { STEPS } from "@/config/event.config";
+import { mediaState, STEPS } from "@/config/event.config";
 import { EventData, EventForm, EventMedia, EventMediaType, SocialLink } from "@/types/event.types";
 import { contactSchma, overviewValidation } from "@/validations/event.validate";
-import { createEvent } from "@/services/event.service";
+import { createEvent, updateEvent } from "@/services/event.service";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 
 const initialState = {
@@ -30,12 +30,6 @@ const initialState = {
   venueName: "",
   helpEmail : ""
 }
-
-const mediaState = [
-  {name: "LOGO", file: null },
-  {name : "THUMBNAIL", file : null},
-  {name : "BANNER", file : null}
-] as EventMedia
 
 const formState = {
 
@@ -58,13 +52,16 @@ const formState = {
   helpEmail : ""
 } as EventForm
 
-export default function EventCreate() {
+export default function EventCreate(
+  { initialForm = formState, initialMedia = mediaState, isEdit = false , eventId = null }:
+  { initialForm: EventForm, initialMedia:EventMedia , isEdit:boolean, eventId:number | null }
+) {
 
   const [currentStep, setCurrentStep] = useState(1);
-  const [form, setForm] = useState<EventForm>(formState);
+  const [form, setForm] = useState(initialForm);
   const [error, setError] = useState<any>(null);
   const [mediaError, setMediaError] = useState<null|string>(null);
-  const [media, setMedia] = useState<EventMedia>(mediaState);
+  const [media, setMedia] = useState(initialMedia);
   const [declaration, setDeclaration] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -115,7 +112,6 @@ export default function EventCreate() {
       )
     );
   };
-  console.log(error);
 
   const validate = (formData: EventForm = form) => {
     
@@ -151,8 +147,6 @@ export default function EventCreate() {
 
     const data = media.filter((v) => (v.name=== "LOGO" && !!v.file) || (v.name === "THUMBNAIL" && !!v.file))
 
-    console.log(data,media);
-
     if (data.length !== 2) {
       setMediaError("Logo & Thumbnail required!");
       return false;
@@ -163,23 +157,40 @@ export default function EventCreate() {
   }
 
   const handleCreation = async () => {
+
+    if (!eventId) return;
+
     try {
 
       setLoading(true);
 
-      const filteredData = media.filter(v => v.file);
-      const mediaData:EventMediaType[] = [];
+      const mediaData:any[] = [];
 
-      for (const v of filteredData) {
-        const url = await uploadToCloudinary(v.file);
-        mediaData.push({ url, name: v.name });
+      for (const v of media) {
+
+        if (v.file && typeof v.file !== "string") {
+
+          const url = await uploadToCloudinary(v.file);
+          mediaData.push({ url, name: v.name });
+
+        } else if (typeof v.file === "string") {
+          
+          mediaData.push({ url: v.file, name: v.name });
+          
+        }
+
       }
 
-      console.log(mediaData)
+      const eventData: EventData = { ...form, media: mediaData, status: "PUBLISHED" }
+      
+      let data = null;
 
-      const eventData:EventData = {...form, media:mediaData, status:"PUBLISHED"}
-      const data = await createEvent(eventData);
-
+      if (isEdit) {
+        data = await updateEvent(eventData, eventId);
+      } else {
+        data = await createEvent(eventData);
+      }
+      
       setTimeout(() => {
         router.push(`/events/${data.slug}`)
       }, 1000);
@@ -322,14 +333,14 @@ export default function EventCreate() {
       {/* Navigation Footer Toolbar */}
       <footer className="bg-slate-900/80 border border-slate-700 backdrop-blur-md rounded-2xl p-4 shadow-xl flex flex-col-reverse sm:flex-row items-center justify-between gap-4">
         {/* Left Action: Draft */}
-        <Button
+        {!isEdit ? (<Button
           disabled={error}
           onClick={() => console.log("Draft saved")}
           className="w-full sm:w-auto px-4 py-2.5 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-800 border border-slate-700/80 rounded-xl gap-2 transition-all active:scale-95"
         >
           <Save className="w-4 h-4 text-slate-400" />
           <span>Save Draft</span>
-        </Button>
+        </Button>) : <div></div>}
 
         {/* Right Actions: Cancel / Back / Next */}
         <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
@@ -357,7 +368,7 @@ export default function EventCreate() {
             onClick={handleNext}
             className="px-5 py-2.5 text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 border border-indigo-500/30 rounded-xl shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/50 gap-2 transition-all active:scale-95"
           >
-            <span>{currentStep === STEPS.length ? "Publish Event" : "Next Step"}</span>
+            <span>{currentStep === STEPS.length ? (isEdit ? "Update Event" :"Publish Event") : "Next Step"}</span>
             <ArrowRight className="w-4 h-4" />
           </Button>
         </div>

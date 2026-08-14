@@ -12,6 +12,16 @@ export const createEvent = async (form: EventData) => {
   return res.data;
 }
 
+export const updateEvent = async (form: EventData, eventId:number) => {
+  
+  const res = await api(`/events/${eventId}`, {
+    method: "PUT",
+    body: JSON.stringify(form)
+  });
+
+  return res.data;
+}
+
 export const getEvents = async () => {
   
   const res = await api("/events", {

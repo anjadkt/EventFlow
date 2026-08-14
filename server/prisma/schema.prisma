@@ -43,7 +43,8 @@ model Event {
   venueName    String
   location     String
   locationLink String
-
+  helpEmail    String
+  
   status       EventStatus @default(DRAFT)
 
   organiserId  Int

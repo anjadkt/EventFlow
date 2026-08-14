@@ -1,6 +1,5 @@
 import { FacebookIcon, InstagramIcon, LinkedInIcon, TwitterXIcon, YoutubeIcon } from "@/components/ui/Icons";
 import { MediaConfigItem, MediaName, SocialPlatforms } from "@/types/event.types";
-import { MessageCircle } from "lucide-react";
 
 export const STEPS = [
   { step: 1, label: "Overview", description: "Basic details & title" },
@@ -9,6 +8,13 @@ export const STEPS = [
   { step: 4, label: "Publish", description: "Review & launch" },
 ];
 
+
+
+export const mediaState = [
+  {name: "LOGO", file: null },
+  {name : "THUMBNAIL", file : null},
+  {name : "BANNER", file : null}
+] as any
 
 
 export const MEDIA_CONFIG: Record<MediaName, MediaConfigItem> = {
