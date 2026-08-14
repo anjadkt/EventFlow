@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
 import { Check, ArrowLeft, ArrowRight, Save, X } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -211,6 +211,13 @@ export default function EventCreate() {
       setCurrentStep((prev) => prev - 1);
       }
   };
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [currentStep]);
 
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-10">
