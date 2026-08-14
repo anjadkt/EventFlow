@@ -44,10 +44,5 @@ router.delete("/:eventId", eventController.deleteEvent);
 // Private
 router.get("/:eventId/attendees", eventController.getEventAttendees);
 
-// RSVP to an event
-// POST /api/events/:eventId/rsvp
-// Private
-router.post("/:eventId/rsvp", eventController.rsvpToEvent);
-
 
 export default router;

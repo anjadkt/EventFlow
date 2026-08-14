@@ -68,13 +68,3 @@ export const getEventAttendees = catchAsync(async (req: Request, res: Response) 
 
     res.status(200).json(new ApiResponse(200, attendees, "Attendees fetched successfully"));
 });
-
-export const rsvpToEvent = catchAsync(async (req: Request, res: Response) => {
-
-    const eventId = Number(req.params.eventId);
-    const userId = Number(req.user?.id);
-
-    const result = await eventService.rsvp(eventId, userId);
-
-    res.status(200).json(new ApiResponse(200, result, "RSVPed successfully"));
-});
