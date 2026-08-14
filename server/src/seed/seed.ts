@@ -190,20 +190,24 @@ async function main() {
         prisma.event.deleteMany(),
     ]);
 
-    const organiserId = users[0].id;
+    const organiserIds = users.map(v => v.id);
+
     await prisma.$transaction(
-        seedEvents.map(({ media, socialLinks, title, ...event }) =>
-            prisma.event.create({
-                data: {
-                    ...event,
-                    title,
-                    slug: generateSlug(title),
-                    organiserId,
-                    media: { create: media },
-                    socialLinks: { create: socialLinks },
-                },
-            }),
-        ),
+        seedEvents.map(({ media, socialLinks, title, ...event }) => {
+          const organiserId =
+            organiserIds[Math.floor(Math.random() * organiserIds.length)];
+      
+          return prisma.event.create({
+            data: {
+              ...event,
+              title,
+              slug: generateSlug(title),
+              organiserId,
+              media: { create: media },
+              socialLinks: { create: socialLinks },
+            },
+          });
+        }),
     );
 
     console.log(`Seed complete: ${users.length} users and ${seedEvents.length} events.`);

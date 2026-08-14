@@ -14,7 +14,7 @@ router.get("/", eventController.getEvents);
 // Get a single event by ID
 // GET /api/events/:eventId
 // Public
-router.get("/:eventId", eventController.getEvent);
+router.get("/:slug", eventController.getEvent);
 
 
 router.use(authenticate);

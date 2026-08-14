@@ -86,6 +86,10 @@ export const createEventSchema = z.object({
         .max(100, "Venue name must not exceed 100 characters")
         .trim(),
 
+    helpEmail: z
+        .email("Email Required!")
+        .min(4, "Enter a valid email"),
+
     status: z.enum(["DRAFT", "PUBLISHED", "CANCELLED", "COMPLETED"]).default("DRAFT")
 })
     .refine((data) => data.isFree ? !data.price : true, {

@@ -109,7 +109,7 @@ export const profile = async (userId: number) => {
 export const token = async (refreshToken: string) => {
 
     if (!refreshToken) {
-        throw new ApiError(401, "Unauthorized");
+        throw new ApiError(403, "Refrsh token required");
     }
 
     const decoded = verifyToken(refreshToken, env.JWT_REFRESH_SECRET) as { id: number };

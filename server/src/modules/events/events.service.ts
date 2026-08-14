@@ -110,9 +110,9 @@ export const getMyEvents = async (organiserId: number) => {
 };
 
 // Get a single event by ID
-export const getEvent = async (eventId: number) => {
+export const getEvent = async (slug: string) => {
     const event = await prisma.event.findUnique({
-        where: { id: eventId },
+        where: { slug },
         include: {
             socialLinks: true,
             media : true,

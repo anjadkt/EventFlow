@@ -14,9 +14,9 @@ export const getEvents = catchAsync(async (req: Request, res: Response) => {
 
 export const getEvent = catchAsync(async (req: Request, res: Response) => {
 
-    const eventId = Number(req.params.eventId);
+    const slug = req.params.slug as string;
 
-    const event = await eventService.getEvent(eventId);
+    const event = await eventService.getEvent(slug);
 
     res.status(200).json(new ApiResponse(200, event, "Event fetched successfully"));
 });
