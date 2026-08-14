@@ -1,4 +1,5 @@
-import React from "react";
+export const dynamic = "force-dynamic";
+
 import EventCard from "@/components/events/EventCard";
 import { getEvents } from "@/services/event.service";
 import { Calendar, Sparkles, Search, SlidersHorizontal, Grid } from "lucide-react";

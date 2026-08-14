@@ -18,7 +18,15 @@ export const formatTime = (dateStr: string) => {
   });
 };
 
-export const formatFullDateTime = (dateStr: string) => {
-  if (!dateStr) return "";
-  return `${formatDate(dateStr)} at ${formatTime(dateStr)}`;
-};
+export function formatFullDateTime(date: string | Date) {
+  return new Intl.DateTimeFormat("en-IN", {
+    timeZone: "Asia/Kolkata",
+    weekday: "short",
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  }).format(new Date(date));
+}

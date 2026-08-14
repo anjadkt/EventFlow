@@ -6,6 +6,7 @@ import { AlertCircle, CheckCircle2, XCircle, Clock, ShieldCheck } from "lucide-r
 import { createRsvp, getEventRsvp } from "@/services/rsvp.service";
 import Button from "../ui/Button";
 import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 type Props = {
   eventId: number;
@@ -28,18 +29,20 @@ export default function EventRsvpCta({
 
   const { user } = useAuth();
   const isOrganiser = Boolean(user?.id && user.id === organiserId);
+  const router = useRouter();
 
   const isAttending = rsvpStatus === "GOING" || rsvpStatus === "MAYBE_GOING";
 
   const handleRegOrCancel = async () => {
     if (isDeadlinePassed) return;
+    if (!user) router.push("/auth");
 
     try {
       setLoading(true);
       const res = await createRsvp(eventId);
       setRsvpStatus(res.status);
-    } catch (error) {
-      console.error("RSVP Action failed:", error);
+    } catch (error:any) {
+      console.log("RSVP Action failed:", error);
     } finally {
       setLoading(false);
     }

@@ -34,6 +34,7 @@ export type CreateEventPayload = {
     location: string;
     locationLink: string;
     venueName: string;
+    helpEmail: string;
     status: EventStatus;
 };
 
