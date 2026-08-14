@@ -1,12 +1,12 @@
-import React from "react";
 import EventCard from "@/components/events/EventCard";
 import { getEvents } from "@/services/event.service";
-import { Calendar, Sparkles, Search, SlidersHorizontal, Grid } from "lucide-react";
+import { Calendar, Sparkles, Grid } from "lucide-react";
 import { EventListItem } from "@/types/event.types";
 
 export const revalidate = 60;
 
 export default async function EventsPage() {
+
   const events: EventListItem[] = (await getEvents()) || [];
 
   return (
