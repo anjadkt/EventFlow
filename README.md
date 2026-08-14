@@ -83,6 +83,6 @@ NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=your-unsigned-upload-preset
 
 4. Open [http://localhost:3000](http://localhost:3000). The API is available at [http://localhost:3001](http://localhost:3001), and MySQL is exposed on port `3307`.
 
-Docker starts MySQL, waits for it, runs Prisma migrations, generates the Prisma client, and seeds demo users and events. The demo users use the password `Password@123` (for example, `john@example.com`).
-
+Docker starts MySQL, waits for it, runs Prisma migrations, generates the Prisma client, and seeds demo users and events. The demo users use the password `Password@123` (users: `john@example.com`, `alex@example.com`, `mike@example.com`).
+new registration also available
 .
